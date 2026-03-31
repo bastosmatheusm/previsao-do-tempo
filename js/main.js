@@ -1,5 +1,8 @@
 // Ponto de entrada da aplicação — orquestra as chamadas de api.js e ui.js
 
+// Aplica o tema diurno ou noturno com base no horário atual
+document.body.classList.add(getTimeOfDay());
+
 async function handleSearch() {
   const input = document.getElementById('city-input');
   const cityName = input.value.trim();
@@ -10,6 +13,10 @@ async function handleSearch() {
   }
 
   renderLoading();
+
+  renderLoading();
+document.body.classList.replace('day', getTimeOfDay());
+document.body.classList.replace('night', getTimeOfDay());
 
   try {
     // Busca as coordenadas da cidade informada

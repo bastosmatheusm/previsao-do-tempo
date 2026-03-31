@@ -248,3 +248,34 @@ header h1 {
     gap: 1rem;
   }
 }
+
+/* ─── Modo diurno e noturno ─── */
+body.day {
+  background: linear-gradient(to bottom, #87CEEB 0%, #b8e4f7 50%, #e8f4fd 100%);
+  color: #1a1a2e;
+}
+
+body.night {
+  background: linear-gradient(to bottom, #0a0a1a 0%, #1a1a2e 50%, #2a2a4a 100%);
+  color: #f0f4ff;
+}
+
+body.night #current-weather,
+body.night .forecast-card {
+  background-color: #2a2a4a;
+  color: #f0f4ff;
+}
+
+body.night #city-input {
+  background-color: #2a2a4a;
+  color: #f0f4ff;
+  border-color: #444;
+}
+
+body.night .datetime,
+body.night .current-desc,
+body.night .current-meta,
+body.night .forecast-day,
+body.night .forecast-min {
+  color: #aaa;
+}

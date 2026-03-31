@@ -1,4 +1,3 @@
-// api.js
 // Responsabilidade: fazer as requisições HTTP à Open-Meteo
 
 const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search';
@@ -6,18 +5,25 @@ const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast';
 
 // Converte o nome da cidade em latitude e longitude
 async function fetchCoordinates(cityName) {
-  const url = `${GEO_URL}?name=${encodeURIComponent(cityName)}&count=1&language=pt&format=json`;
+  let response;
 
-  const response = await fetch(url);
+  // Tenta fazer a requisição — captura erros de rede (sem internet, timeout, etc.)
+  try {
+    response = await fetch(`${GEO_URL}?name=${encodeURIComponent(cityName)}&count=1&language=pt&format=json`);
+  } catch {
+    throw new Error('Sem conexão com a internet. Verifique sua rede e tente novamente.');
+  }
 
+  // Captura erros do servidor (ex: API fora do ar)
   if (!response.ok) {
-    throw new Error('Erro ao buscar coordenadas da cidade.');
+    throw new Error('Erro ao buscar coordenadas. Tente novamente mais tarde.');
   }
 
   const data = await response.json();
 
+  // Captura quando a cidade não é encontrada na base de dados
   if (!data.results || data.results.length === 0) {
-    throw new Error('Cidade não encontrada.');
+    throw new Error('Cidade não encontrada. Verifique o nome e tente novamente.');
   }
 
   return data.results[0];
@@ -35,12 +41,18 @@ async function fetchWeather(latitude, longitude) {
     wind_speed_unit: 'kmh'
   });
 
-  const url = `${WEATHER_URL}?${params}`;
+  let response;
 
-  const response = await fetch(url);
+  // Tenta fazer a requisição — captura erros de rede
+  try {
+    response = await fetch(`${WEATHER_URL}?${params}`);
+  } catch {
+    throw new Error('Sem conexão com a internet. Verifique sua rede e tente novamente.');
+  }
 
+  // Captura erros do servidor
   if (!response.ok) {
-    throw new Error('Erro ao buscar dados meteorológicos.');
+    throw new Error('Erro ao buscar dados meteorológicos. Tente novamente mais tarde.');
   }
 
   return await response.json();
