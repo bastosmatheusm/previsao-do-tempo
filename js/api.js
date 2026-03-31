@@ -1,9 +1,31 @@
-// Responsabilidade: fazer as requisições HTTP à Open-Meteo
+/**
+ * @fileoverview Módulo responsável pelas requisições HTTP à API Open-Meteo.
+ */
 
+/**
+ * @constant {string} GEO_URL - Endpoint da API de geocodificação do Open-Meteo.
+ */
 const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+
+/**
+ * @constant {string} WEATHER_URL - Endpoint da API de previsão do tempo do Open-Meteo.
+ */
 const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast';
 
-// Converte o nome da cidade em latitude e longitude
+/**
+ * Converte o nome de uma cidade em coordenadas geográficas (latitude e longitude).
+ *
+ * @async
+ * @param {string} cityName - Nome da cidade a ser buscada.
+ * @returns {Promise<Object>} Objeto com os dados da cidade, incluindo latitude, longitude e nome.
+ * @throws {Error} Se não houver conexão com a internet.
+ * @throws {Error} Se a API retornar um erro de servidor.
+ * @throws {Error} Se a cidade não for encontrada na base de dados.
+ *
+ * @example
+ * const city = await fetchCoordinates('São Paulo');
+ * console.log(city.latitude, city.longitude); // -23.5505, -46.6333
+ */
 async function fetchCoordinates(cityName) {
   let response;
 
@@ -29,7 +51,21 @@ async function fetchCoordinates(cityName) {
   return data.results[0];
 }
 
-// Busca os dados do clima com base em latitude e longitude
+/**
+ * Busca os dados meteorológicos atuais e a previsão dos próximos 7 dias
+ * com base em coordenadas geográficas.
+ *
+ * @async
+ * @param {number} latitude - Latitude da localização.
+ * @param {number} longitude - Longitude da localização.
+ * @returns {Promise<Object>} Objeto com dados meteorológicos atuais e previsão diária.
+ * @throws {Error} Se não houver conexão com a internet.
+ * @throws {Error} Se a API retornar um erro de servidor.
+ *
+ * @example
+ * const weather = await fetchWeather(-23.55, -46.63);
+ * console.log(weather.current.temperature_2m); // 24.5
+ */
 async function fetchWeather(latitude, longitude) {
   const params = new URLSearchParams({
     latitude,
@@ -59,7 +95,7 @@ async function fetchWeather(latitude, longitude) {
 }
 
 // Exporta as funções para uso no Node.js (Jest)
-// No navegador, esse bloco é ignorado
+// No navegador, esse bloco é ignorado pois "module" não está definido
 if (typeof module !== 'undefined') {
   module.exports = { fetchCoordinates, fetchWeather };
 }
