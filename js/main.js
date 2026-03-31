@@ -6,6 +6,10 @@ const CACHE_DURATION_MS = 10 * 60 * 1000;
 // Lista de cidades para comparação
 const citiesToCompare = [];
 
+// Lista de cidades retornadas pelo autocomplete
+let autocompleteResults = [];
+let autocompleteTimer;
+
 /**
  * Salva os dados do clima no localStorage com timestamp.
  * @param {string} cityName - Nome da cidade.
@@ -67,7 +71,28 @@ async function fetchCityWeather(cityName) {
   return { city, weatherData };
 }
 
-// Busca e exibe o clima de uma única cidade
+// Busca e exibe o clima de uma cidade a partir de um objeto city
+async function loadWeatherForCity(city) {
+  renderLoading();
+  document.body.classList.replace('day', getTimeOfDay());
+  document.body.classList.replace('night', getTimeOfDay());
+
+  try {
+    const cached = loadCache(city.name);
+    if (cached) {
+      renderWeather(cached.weatherData, cached.city.name, cached.city.admin1, cached.city.country);
+      return;
+    }
+
+    const weatherData = await fetchWeather(city.latitude, city.longitude);
+    saveCache(city.name, { city, weatherData });
+    renderWeather(weatherData, city.name, city.admin1, city.country);
+  } catch (error) {
+    renderError(error.message);
+  }
+}
+
+// Busca e exibe o clima de uma única cidade pelo input
 async function handleSearch() {
   const input = document.getElementById('city-input');
   const cityName = input.value.trim();
@@ -77,13 +102,15 @@ async function handleSearch() {
     return;
   }
 
+  hideSuggestions();
+
   renderLoading();
   document.body.classList.replace('day', getTimeOfDay());
   document.body.classList.replace('night', getTimeOfDay());
 
   try {
     const { city, weatherData } = await fetchCityWeather(cityName);
-    renderWeather(weatherData, city.name, city.country);
+    renderWeather(weatherData, city.name, city.admin1, city.country);
   } catch (error) {
     renderError(error.message);
   }
@@ -111,6 +138,7 @@ async function handleAddCity() {
 
   citiesToCompare.push(cityName);
   input.value = '';
+  hideSuggestions();
   updateCityList();
 }
 
@@ -124,7 +152,6 @@ async function handleCompare() {
   renderLoading();
 
   try {
-    // Busca o clima de todas as cidades em paralelo
     const results = await Promise.all(citiesToCompare.map(fetchCityWeather));
     renderComparison(results);
   } catch (error) {
@@ -139,13 +166,46 @@ function handleClear() {
   document.getElementById('result-section').innerHTML = '';
 }
 
+// ─── Autocomplete ─────────────────────────────────────────────────────────────
+const cityInput = document.getElementById('city-input');
+
+// Busca sugestões conforme o usuário digita com debounce de 350ms
+cityInput.addEventListener('input', () => {
+  clearTimeout(autocompleteTimer);
+  const val = cityInput.value.trim();
+
+  if (val.length < 2) { hideSuggestions(); return; }
+
+  autocompleteTimer = setTimeout(async () => {
+    const cities = await searchCities(val);
+    autocompleteResults = cities;
+    renderSuggestions(cities);
+  }, 350);
+});
+
+// Ao clicar em uma sugestão, carrega o clima daquela cidade
+document.getElementById('search-section').addEventListener('click', (e) => {
+  const item = e.target.closest('.suggestion-item');
+  if (!item) return;
+  const index = parseInt(item.dataset.index);
+  const city = autocompleteResults[index];
+  cityInput.value = city.name;
+  hideSuggestions();
+  loadWeatherForCity(city);
+});
+
+// Esconde sugestões ao clicar fora da seção de busca
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#search-section')) hideSuggestions();
+});
+
 // ─── Event Listeners ──────────────────────────────────────────────────────────
 document.getElementById('search-btn').addEventListener('click', handleSearch);
 document.getElementById('add-btn').addEventListener('click', handleAddCity);
 document.getElementById('compare-btn').addEventListener('click', handleCompare);
 document.getElementById('clear-btn').addEventListener('click', handleClear);
 
-document.getElementById('city-input').addEventListener('keydown', function (event) {
+cityInput.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') handleSearch();
 });
 

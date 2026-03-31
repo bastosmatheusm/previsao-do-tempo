@@ -94,8 +94,30 @@ async function fetchWeather(latitude, longitude) {
   return await response.json();
 }
 
+/**
+ * Busca sugestões de cidades pelo nome para o autocomplete.
+ * @param {string} query - Texto digitado pelo usuário.
+ * @returns {Promise<Array>} Lista de cidades encontradas.
+ */
+async function searchCities(query) {
+  if (query.length < 2) return [];
+
+  let response;
+
+  try {
+    response = await fetch(`${GEO_URL}?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`);
+  } catch {
+    return [];
+  }
+
+  if (!response.ok) return [];
+
+  const data = await response.json();
+  return data.results ?? [];
+}
+
 // Exporta as funções para uso no Node.js (Jest)
 // No navegador, esse bloco é ignorado pois "module" não está definido
 if (typeof module !== 'undefined') {
-  module.exports = { fetchCoordinates, fetchWeather };
+  module.exports = { fetchCoordinates, fetchWeather, searchCities };
 }

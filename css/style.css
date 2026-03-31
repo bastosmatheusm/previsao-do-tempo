@@ -352,33 +352,39 @@ body.night .forecast-min {
 #compare-btn {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  background-color: #1a73e8;
-  color: #fff;
+  background: linear-gradient(135deg, #6fb1ff, #4facfe);
+  color: #0b1f3a;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   margin-right: 0.5rem;
-  transition: background-color 0.2s;
+  transition: all 0.25s ease;
 }
 
 #compare-btn:hover {
-  background-color: #1558b0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #82c0ff, #5bb8ff);
+  opacity: 0.95;
 }
 
 #clear-btn {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  background-color: transparent;
-  color: #c0392b;
-  border: 1px solid #c0392b;
+  background: linear-gradient(135deg, #ff6f6f, #fe4f4f);
+  color: #3a0b0b;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  margin-right: 0.5rem;
+  transition: all 0.25s ease;
 }
 
 #clear-btn:hover {
-  background-color: #c0392b;
-  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #ff8282, #ff5b5b);
+  opacity: 0.95;
 }
 
 /* ─── Cards de comparação ─── */
@@ -515,4 +521,52 @@ body.day .forecast-min {
 
 body.day .current-desc {
   color: #333;
+}
+
+/* ─── Autocomplete ─── */
+#search-section {
+  position: relative;
+}
+
+#suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 50;
+  display: none;
+}
+
+.suggestion-item {
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.15s;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f7ff;
+}
+
+body.night #suggestions {
+  background-color: #2a2a4a;
+  border-color: #444;
+}
+
+body.night .suggestion-item {
+  border-color: #3a3a5a;
+  color: #f0f4ff;
+}
+
+body.night .suggestion-item:hover {
+  background-color: #3a3a6a;
 }

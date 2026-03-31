@@ -11,7 +11,7 @@ function renderError(message) {
 }
 
 // Exibe os dados do clima atual e a previsão dos próximos 7 dias
-function renderWeather(data, cityName, countryName) {
+function renderWeather(data, cityName, stateName, countryName) {
   const resultSection = document.getElementById('result-section');
 
   const current = data.current;
@@ -36,7 +36,7 @@ function renderWeather(data, cityName, countryName) {
 
   resultSection.innerHTML = `
     <div id="current-weather">
-      <h2>${cityName}, ${countryName}</h2>
+      <h2>${[cityName, stateName, countryName].filter(Boolean).join(', ')}</h2>
       <p class="datetime">${formatDateTime()}</p>
       <p class="current-icon">${info.icon}</p>
       <p class="current-temp">${formatTemp(current.temperature_2m)}</p>
@@ -70,7 +70,7 @@ function renderComparison(results) {
     return `
       <div class="compare-card">
         <h3>${city.name}</h3>
-        <p class="compare-country">${city.country}</p>
+        <p class="compare-country">${[city.admin1, city.country].filter(Boolean).join(', ')}</p>
         <p class="compare-icon">${info.icon}</p>
         <p class="compare-temp">${formatTemp(current.temperature_2m)}</p>
         <p class="compare-desc">${info.desc}</p>
@@ -90,4 +90,71 @@ function renderComparison(results) {
       <div id="compare-cards">${cards}</div>
     </div>
   `;
+}
+
+// Exibe as sugestões de autocomplete abaixo do input
+function renderSuggestions(cities) {
+  let suggestionsEl = document.getElementById('suggestions');
+
+  // Cria o elemento se ainda não existir
+  if (!suggestionsEl) {
+    suggestionsEl = document.createElement('div');
+    suggestionsEl.id = 'suggestions';
+    document.getElementById('city-input').parentNode.appendChild(suggestionsEl);
+  }
+
+  if (!cities.length) {
+    suggestionsEl.innerHTML = '';
+    suggestionsEl.style.display = 'none';
+    return;
+  }
+
+  suggestionsEl.innerHTML = cities.map((city, index) => {
+    const parts = [city.name, city.admin1, city.country].filter(Boolean);
+    return `<div class="suggestion-item" data-index="${index}">${parts.join(', ')}</div>`;
+  }).join('');
+
+  suggestionsEl.style.display = 'block';
+}
+
+// Esconde as sugestões
+function hideSuggestions() {
+  const el = document.getElementById('suggestions');
+  if (el) {
+    el.innerHTML = '';
+    el.style.display = 'none';
+  }
+}
+
+// Exibe as sugestões de autocomplete abaixo do input
+function renderSuggestions(cities) {
+  let suggestionsEl = document.getElementById('suggestions');
+
+  if (!suggestionsEl) {
+    suggestionsEl = document.createElement('div');
+    suggestionsEl.id = 'suggestions';
+    document.getElementById('city-input').parentNode.appendChild(suggestionsEl);
+  }
+
+  if (!cities.length) {
+    suggestionsEl.innerHTML = '';
+    suggestionsEl.style.display = 'none';
+    return;
+  }
+
+  suggestionsEl.innerHTML = cities.map((city, index) => {
+    const parts = [city.name, city.admin1, city.country].filter(Boolean);
+    return `<div class="suggestion-item" data-index="${index}">${parts.join(', ')}</div>`;
+  }).join('');
+
+  suggestionsEl.style.display = 'block';
+}
+
+// Esconde as sugestões
+function hideSuggestions() {
+  const el = document.getElementById('suggestions');
+  if (el) {
+    el.innerHTML = '';
+    el.style.display = 'none';
+  }
 }
