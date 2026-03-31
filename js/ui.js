@@ -56,3 +56,38 @@ function renderWeather(data, cityName, countryName) {
     </div>
   `;
 }
+
+// Exibe os cards de comparação de múltiplas cidades lado a lado
+function renderComparison(results) {
+  const resultSection = document.getElementById('result-section');
+
+  // Gera um card resumido para cada cidade
+  const cards = results.map(({ city, weatherData }) => {
+    const current = weatherData.current;
+    const daily = weatherData.daily;
+    const info = getWeatherInfo(current.weathercode);
+
+    return `
+      <div class="compare-card">
+        <h3>${city.name}</h3>
+        <p class="compare-country">${city.country}</p>
+        <p class="compare-icon">${info.icon}</p>
+        <p class="compare-temp">${formatTemp(current.temperature_2m)}</p>
+        <p class="compare-desc">${info.desc}</p>
+        <div class="compare-meta">
+          <p>Sensação: ${formatTemp(current.apparent_temperature)}</p>
+          <p>Humidade: ${current.relative_humidity_2m}%</p>
+          <p>Vento: ${Math.round(current.windspeed_10m)} km/h</p>
+          <p>Máx: ${formatTemp(daily.temperature_2m_max[0])} / Mín: ${formatTemp(daily.temperature_2m_min[0])}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  resultSection.innerHTML = `
+    <div id="comparison">
+      <h2>Comparação de Cidades</h2>
+      <div id="compare-cards">${cards}</div>
+    </div>
+  `;
+}
