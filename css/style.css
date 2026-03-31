@@ -289,19 +289,25 @@ body.night .forecast-min {
 
 /* ─── Botão adicionar cidade ─── */
 #add-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  background-color: transparent;
-  color: #1a73e8;
-  border: 1px solid #1a73e8;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+
+  background: linear-gradient(135deg, #6fb1ff, #4facfe);
+  color: #0b1f3a;
+
+  border: none;
   border-radius: 8px;
+
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+
+  transition: all 0.25s ease;
 }
 
 #add-btn:hover {
-  background-color: #1a73e8;
-  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #82c0ff, #5bb8ff);
+  opacity: 0.95;
 }
 
 /* ─── Seção de comparação ─── */
@@ -480,4 +486,33 @@ body.night #footer {
 
 body.night #footer a {
   color: #7eb8f7;
+}
+
+/* ─── Correções de contraste no modo diurno ─── */
+body.day #city-input::placeholder {
+  color: #666;
+}
+
+body.day .datetime {
+  color: #444;
+}
+
+body.day .current-meta {
+  color: #333;
+}
+
+body.day #forecast h3 {
+  color: #222;
+}
+
+body.day .forecast-day {
+  color: #333;
+}
+
+body.day .forecast-min {
+  color: #555;
+}
+
+body.day .current-desc {
+  color: #333;
 }
