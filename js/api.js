@@ -57,3 +57,9 @@ async function fetchWeather(latitude, longitude) {
 
   return await response.json();
 }
+
+// Exporta as funções para uso no Node.js (Jest)
+// No navegador, esse bloco é ignorado
+if (typeof module !== 'undefined') {
+  module.exports = { fetchCoordinates, fetchWeather };
+}
