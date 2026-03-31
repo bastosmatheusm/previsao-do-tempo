@@ -40,7 +40,14 @@ body::before {
 #app {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  padding-bottom: 2rem;
 }
 
 /* ─── Cabeçalho ─── */
@@ -443,4 +450,34 @@ body.night .compare-meta {
   #add-btn {
     width: 100%;
   }
+}
+
+/* ─── Footer ─── */
+#footer {
+  margin-top: auto;
+  padding: 1rem 0;
+  border-top: 1px solid #ccc;
+  font-size: 0.8rem;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+#footer a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+#footer a:hover {
+  text-decoration: underline;
+}
+
+body.night #footer {
+  border-color: #444;
+  color: #aaa;
+}
+
+body.night #footer a {
+  color: #7eb8f7;
 }
